@@ -1,0 +1,75 @@
+name: Release and Publish to Open VSX
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+*'
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag name to release (e.g. 3.1.0)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  release-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository (Full git history for release notes)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Determine Version Tag
+        id: version
+        run: |
+          if [ -n "${{ github.event.inputs.tag_name }}" ]; then
+            TAG="${{ github.event.inputs.tag_name }}"
+          elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+          else
+            TAG=$(node -p "require('./package.json').version")
+          fi
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compile extension
+        run: npm run vscode:prepublish
+
+      - name: Package VSIX
+        run: |
+          npx @vscode/vsce package --out unreal-angelscript-clang-format-${{ steps.version.outputs.tag }}.vsix
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: ${{ steps.version.outputs.tag }}
+          generate_release_notes: true
+          files: |
+            unreal-angelscript-clang-format-${{ steps.version.outputs.tag }}.vsix
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to Open VSX
+        run: |
+          if [ -n "$OVSX_PAT" ]; then
+            npx ovsx publish unreal-angelscript-clang-format-${{ steps.version.outputs.tag }}.vsix -p "$OVSX_PAT"
+          else
+            echo "OVSX_PAT secret is not set. Skipping Open VSX publishing."
+          fi
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}

@@ -1,4 +1,11 @@
-# Unreal AngelScript Clang-Format
+# Unreal AngelScript Clang-Format (Open VSX Community Build)
+
+> [!NOTE]
+> **Community Distribution Notice & Attribution**  
+> This extension is a community build maintained and distributed to Open VSX by [@ryugibo](https://github.com/ryugibo).  
+> The original extension is developed by **Hazelight Games AB** and licensed under the [MIT License](LICENSE).  
+> - **Upstream Repository**: [Hazelight/vscode-unreal-angelscript-formatter](https://github.com/Hazelight/vscode-unreal-angelscript-formatter)  
+> - **Official Documentation**: https://angelscript.hazelight.se  
 
 Format Unreal Engine AngelScript code using Clang-Format
 

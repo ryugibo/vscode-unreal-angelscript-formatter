@@ -2,7 +2,7 @@
   "name": "unreal-angelscript-clang-format",
   "displayName": "Unreal AngelScript Clang-Format",
   "description": "Format Unreal Engine AngelScript code using Clang-Format",
-  "publisher": "Hazelight",
+  "publisher": "ryugibo",
   "version": "3.1.0",
   "icon": "resources/icon.png",
   "engines": {
@@ -53,10 +53,10 @@
   "license": "SEE LICENSE IN LICENSE",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Hazelight/vscode-unreal-angelscript-formatter"
+    "url": "https://github.com/ryugibo/vscode-unreal-angelscript-formatter"
   },
   "bugs": {
-    "url": "https://github.com/Hazelight/vscode-unreal-angelscript-formatter/issues"
+    "url": "https://github.com/ryugibo/vscode-unreal-angelscript-formatter/issues"
   },
   "scripts": {
     "vscode:prepublish": "npm run esbuild-base -- --minify",
